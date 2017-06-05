@@ -1,0 +1,86 @@
+#!/usr/bin/python
+import requests
+import hashlib
+import md5
+import hmac
+import base64
+import time
+import json
+from decimal import *
+import gevent
+import sys
+from terminaltables import AsciiTable
+
+getcontext().prec = 6
+
+sigure_keywords = ["1", "10000", "buy", "141377098123", "3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a"]
+secret="@m3,.-/O3DZ-OYj7K-7BZrg-EZFm4-$VxYX-VN~Xy"
+payload = {"amount":1, "price":"10000", "type":"buy", "nonce":"141377098123",
+    "key":"3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a", "signature":""}
+
+min_value = Decimal("1.0")
+coins = [
+    {"name":"doge", "min":Decimal("1.0"), "cur":Decimal("1.0"), "per":Decimal("1.0"), "trend":"none", "trans":"no"},
+    ]
+
+table_data = [
+    ['Name', 'Min', 'Current', 'Percent'],
+]
+    
+
+def handle_transcation(item):
+    print "buyin"
+    print "monitor price down"
+    print "sell"
+
+def price_monitor():
+    global coins
+
+    while True:
+        for item in coins:
+            payload["coin"] = item["name"]
+            try:
+                ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload).json()
+            except:
+                print "get ticker %s error" % (item["name"])
+                continue
+            item["cur"] = Decimal(ticker["sell"])
+
+            if item["cur"] < item["min"]:
+                item["min"] = item["cur"]
+            item["per"] = item["cur"]*100/item["min"] - 100
+
+            if item["trans"] == "no":
+                if item["per"] >= Decimal("2.0"):
+                    item["trans"] = "yes"
+                    print "Starting to buying at price: %s(base: %s)" % (item["cur"], item["min"])
+                    gevent.spawn(handle_transcation, item)
+
+        gevent.sleep(30)
+
+def show_price():
+    global coins
+    
+    while True:
+        gevent.sleep(120)
+        td = [
+            ['Name', 'Min', 'Current', 'Percent'],
+        ]
+        for item in coins:
+            if item["per"] > Decimal("2.0") and item["per"] < Decimal("5.0"):
+                td.append([item["name"], str(item["min"]) + " (upward)", item["cur"], str(item["per"]) + "%"])
+            elif item["per"] > Decimal("10.0"):
+                td.append([item["name"], str(item["min"]) + " (beyond)", item["cur"], str(item["per"])+"%"])
+            elif item["min"] == item["cur"] or item["per"] < Decimal("1.0"):
+                td.append([item["name"], str(item["min"]) + " (downward)", item["cur"], str(item["per"])+"%"])
+            else:
+                pass
+        table = AsciiTable(td)
+        print table.table
+
+
+if __name__ == '__main__':
+    thing_to_hash = "&".join(sigure_keywords)
+    payload["signature"]=hmac.new(secret, msg=thing_to_hash, digestmod=hashlib.sha256).hexdigest()
+    gevent.joinall([gevent.spawn(price_monitor), gevent.spawn(show_price)])
+
