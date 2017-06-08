@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import sqlite3
+import requests
+import gevent
+import hmac
+import hashlib
+from datetime import datetime
+
+coins=["doge"]
+sigure_keywords = ["1", "10000", "buy", "141377098123", "3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a"]
+secret="@m3,.-/O3DZ-OYj7K-7BZrg-EZFm4-$VxYX-VN~Xy"
+payload = {"amount":1, "price":"10000", "type":"buy", "nonce":"141377098123",
+    "key":"3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a",
+	"signature": hmac.new(secret, msg="&".join(sigure_keywords), digestmod=hashlib.sha256).hexdigest(),
+	"coin":""}
+
+
+def add_sql(name, ticker):
+	try:
+		conn = sqlite3.connect('coins.db')
+		sql = 'INSERT INTO COINS(NAME, PRICE, TIME) VALUES("%s", "%s", "%s")' % (name, ticker[u"sell"], datetime.now())
+		#print sql
+		conn.execute(sql)
+		conn.commit()
+		conn.close()
+	except:
+		print "add recorder error"
+
+def get_data():
+	while True:
+		for coin in coins:
+			try:
+				payload["coin"] = coin
+				ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload).json()
+				#print ticker
+			except:
+				print "get %s ticker error" % (coin)
+				continue
+			add_sql(coin, ticker)
+		gevent.sleep(5)
+
+if __name__ == '__main__':
+	gevent.joinall([gevent.spawn(get_data)])
