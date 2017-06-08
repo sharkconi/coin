@@ -1,20 +1,36 @@
 <html>
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Coins</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
-    <table border="0" frame="box">
+    <div class="container">
+
+    <table class="table table-hover">
         <tr>
             <th>Name</th><th>Price</th><th>Max</th><th>Min</th>
         <tr>
         {% for coin in coins%}
+        {% if coin["percent"] > 30 %}
+        <tr class="danger">
+        {%elif coin["percent"] > 10 %}
+        <tr class="info">
+        {%else%}
         <tr>
+        {%endif%}
             <td>{{coin["name"]}}</td>
             <td>{{coin["price"]}} ({{coin["percent"]}}%)</td>
             <td>{{coin["max"]}}</td>
             <td>{{coin["min"]}}</td>
         </tr>
         {%endfor%}
-    </table
+    </table>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js">
 </body>
 </html>
