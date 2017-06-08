@@ -2,12 +2,12 @@
 
 import sqlite3
 import requests
-import gevent
 import hmac
 import hashlib
+import time
 from datetime import datetime
 
-coins=["doge"]
+coins=["doge", "met", "plc", "jbc", "skt", "tfc", "mtc", "ifc", "dnc", "xrp"]
 sigure_keywords = ["1", "10000", "buy", "141377098123", "3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a"]
 secret="@m3,.-/O3DZ-OYj7K-7BZrg-EZFm4-$VxYX-VN~Xy"
 payload = {"amount":1, "price":"10000", "type":"buy", "nonce":"141377098123",
@@ -38,7 +38,7 @@ def get_data():
 				print "get %s ticker error" % (coin)
 				continue
 			add_sql(coin, ticker)
-		gevent.sleep(5)
+		time.sleep(2)
 
 if __name__ == '__main__':
-	gevent.joinall([gevent.spawn(get_data)])
+	get_data()

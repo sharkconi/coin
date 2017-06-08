@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>Coins</title>
+</head>
+<body>
+    <table border="0" frame="box">
+        <tr>
+            <th>Name</th><th>Price</th><th>Max</th><th>Min</th>
+        <tr>
+        {% for coin in coins%}
+        <tr>
+            <td>{{coin["name"]}}</td>
+            <td>{{coin["price"]}} ({{coin["percent"]}}%)</td>
+            <td>{{coin["max"]}}</td>
+            <td>{{coin["min"]}}</td>
+        </tr>
+        {%endfor%}
+    </table
+</body>
+</html>
