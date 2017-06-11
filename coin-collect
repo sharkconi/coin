@@ -7,7 +7,7 @@ import hashlib
 import time
 from datetime import datetime
 
-coins=["doge", "met", "plc", "jbc", "skt", "tfc", "mtc", "ifc", "dnc", "xrp", "max"]
+coins=["doge", "met", "plc", "jbc", "skt", "tfc", "mtc", "ifc", "dnc", "xrp", "max", "bts"]
 sigure_keywords = ["1", "10000", "buy", "141377098123", "3aky3-9qyjt-t7n5k-aggtu-d78rq-fatag-fcs1a"]
 secret="@m3,.-/O3DZ-OYj7K-7BZrg-EZFm4-$VxYX-VN~Xy"
 payload = {"amount":1, "price":"10000", "type":"buy", "nonce":"141377098123",
@@ -32,13 +32,13 @@ def get_data():
 		for coin in coins:
 			try:
 				payload["coin"] = coin
-				ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload).json()
+				ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload, timeout=1).json()
 				#print ticker
 			except:
 				print "get %s ticker error" % (coin)
 				continue
 			add_sql(coin, ticker)
-		time.sleep(2)
+		time.sleep(1)
 
 if __name__ == '__main__':
 	get_data()
