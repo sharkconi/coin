@@ -17,18 +17,13 @@
             <th>Name</th><th>Price</th><th>Max</th><th>Min</th>
         <tr>
         {% for coin in coins%}
-        {% if coin["percent"] > 30 %}
-        <tr class="danger">
-        {%elif coin["percent"] > 10 %}
-        <tr class="info">
-        {%else%}
         <tr>
-        {%endif%}
-            <td>{{coin["name"]}}</td>
-            <td>{{coin["price"]}} ({{coin["percent"]}}%)</td>
+            <th rowspan="2">{{coin["name"]}}</td>
+            <td>{{coin["price"]}} {{coin["percent"]}}%</td>
             <td>{{coin["max"]}}</td>
             <td>{{coin["min"]}}</td>
         </tr>
+        <tr><td>{{coin["5min"]}}%</td><td>{{coin["15min"]}}%</td><td>{{coin["30min"]}}%</td></tr>
         {%endfor%}
     </table>
     </div>
