@@ -11,7 +11,7 @@ coins=["doge", "met", "plc", "jbc", "skt", "tfc"]
 coins_name={"doge":u"狗狗币", "met":u"美通币", "plc":u"保罗币", "jbc":u"聚宝币",
     "skt":u"鲨之信", "tfc":u"传送币", "mtc":u"侯宝币",
     "ifc":u"无限币", "dnc":u"暗网币", "xrp":u"瑞波币", "max":u"最大币",
-    "bts":u"比特股"}
+    "bts":u"比特股", "rss":u"红贝壳", "etc":u"以太经典"}
 def get_coin_state_by_period(period):
     conn = sqlite3.connect('coins.db')
     coins_stat={}
@@ -47,6 +47,19 @@ def get_coin_state_by_period(period):
     return coins_stat
 
 
+@app.route('/simple')
+def coin_simple_stat():
+    stats = get_coin_state_by_period("1h")
+    coins = []
+    for name in stats.keys():
+        coins.append({"name":coins_name[name], "price":stats[name]["price"],
+            "percent":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["min"]) - 100)),
+            "max":stats[name]["max"], "min":stats[name]["min"],
+            "5min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["5min"]) - 100)),
+            "15min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["15min"]) - 100)),
+            "30min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["30min"]) - 100))})
+    return render_template("simple.html", coins=coins)
+ 
 @app.route('/stat')
 def coin_stat():
     stats = get_coin_state_by_period("1h")
