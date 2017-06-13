@@ -18,7 +18,7 @@ def get_coin_state_by_period(period):
 
     cursor = conn.execute("select name, price from coins group by name")
     for row in cursor:
-        coins_stat[row[0]]= {"price":row[1], "max":0, "min":0, "5min":0, "15min":0, "30min":0}
+        coins_stat[row[0]]= {"price":row[1], "max":0, "min":0, "60min":0, "15min":0, "30min":0}
 
     cursor = conn.execute("select name, max(price), min(price) from coins group by name")
     for row in cursor:
@@ -26,10 +26,10 @@ def get_coin_state_by_period(period):
         coins_stat[row[0]]["min"] = row[2]
 
     sql = 'select name, max(price), min(price) from coins where time > "%s" group by name' % \
-            (datetime.datetime.now() -datetime.timedelta(minutes=5))
+            (datetime.datetime.now() -datetime.timedelta(minutes=60))
     cursor = conn.execute(sql)
     for row in cursor:
-        coins_stat[row[0]]["5min"] = row [2]
+        coins_stat[row[0]]["60min"] = row [2]
 
     sql = 'select name, max(price), min(price) from coins where time > "%s" group by name' % \
             (datetime.datetime.now() -datetime.timedelta(minutes=15))
@@ -68,7 +68,7 @@ def coin_stat():
         coins.append({"name":coins_name[name], "price":stats[name]["price"],
             "percent":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["min"]) - 100)),
             "max":stats[name]["max"], "min":stats[name]["min"],
-            "5min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["5min"]) - 100)),
+            "60min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["60min"]) - 100)),
             "15min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["15min"]) - 100)),
             "30min":float('%0.2f' % (((stats[name]["price"] * 100)/stats[name]["30min"]) - 100))})
     return render_template("stat.html", coins=coins)

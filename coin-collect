@@ -32,7 +32,7 @@ def get_data():
 		for coin in coins:
 			try:
 				payload["coin"] = coin
-				ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload, timeout=1).json()
+				ticker = requests.get("https://www.jubi.com/api/v1/ticker", params=payload, timeout=3).json()
 				#print ticker
 			except:
 				print "get %s ticker error" % (coin)
