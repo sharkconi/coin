@@ -14,7 +14,7 @@
 
     <table class="table table-hover">
         <tr>
-            <th>Name</th><th>Price</th><th>Max</th><th>Min</th>
+            <th>Name</th><th>Price</th><th>Max</th><th>Min</th><th>%</th>
         <tr>
         {% for coin in coins%}
 	{% if coin["percent"] < 10 %}
@@ -28,8 +28,12 @@
             <td>{{coin["price"]}}</td>
             <td>{{coin["max"]}}</td>
             <td>{{coin["min"]}}</td>
+			<td>{{coin["volumn"]}}M</td>
         </tr>
-        <tr><td>{{coin["15min"]}}%</td><td>{{coin["30min"]}}%</td><td>{{coin["60min"]}}%</td></tr>
+        <tr>
+			<td>{{coin["60min"]}}</td><td>{{coin["15minp"]}}%</td><td>{{coin["30minp"]}}%</td>
+			<td>{{coin["60minp"]}}%</td>
+		</tr>
         {%endfor%}
     </table>
     </div>
